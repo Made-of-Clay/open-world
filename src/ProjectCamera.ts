@@ -4,29 +4,20 @@ import { getGui } from './getGui';
 import { resizeRendererToDisplaySize } from './helpers/responsiveness';
 import GUI from 'lil-gui';
 
-export function addCamera(canvas: HTMLCanvasElement) {
-    const camera = new PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-    camera.position.set(2, 2, 5);
-
-    const cameraControls = new OrbitControls(camera, canvas);
-    cameraControls.enableDamping = true;
-    cameraControls.autoRotate = false;
-    cameraControls.update();
-
-    const gui = getGui();
-    // might add camera controls to set position better for each spot
-    const cameraFolder = gui.addFolder('Camera');
-}
-
 export class ProjectCamera {
     instance: PerspectiveCamera;
     #canvas: HTMLCanvasElement;
-    #cameraControls: OrbitControls
+    #cameraControls: OrbitControls;
     #cameraFolder: GUI;
 
     constructor(canvas: HTMLCanvasElement) {
         this.#canvas = canvas;
-        this.instance = new PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+        this.instance = new PerspectiveCamera(
+            75,
+            canvas.clientWidth / canvas.clientHeight,
+            0.1,
+            1000,
+        );
         this.instance.position.set(2, 2.5, 5.25);
         this.#cameraControls = new OrbitControls(this.instance, canvas);
         this.#cameraControls.enableDamping = true;
@@ -37,10 +28,10 @@ export class ProjectCamera {
     }
 
     tick(renderer: WebGLRenderer) {
-        if (resizeRendererToDisplaySize(renderer)) {;
+        if (resizeRendererToDisplaySize(renderer)) {
             this.instance.aspect = this.#canvas.clientWidth / this.#canvas.clientHeight;
             this.instance.updateProjectionMatrix();
-        };
+        }
 
         this.#cameraControls.update();
     }

@@ -1,31 +1,26 @@
-# Three.js Vite Template with TypeScript
+# Open World
 
-Three.js + Vite + TypeScript starter
+This is an open world project aimed at practicing exploration of a space with a given avatar.
 
----
+## Phase Breakdown
 
-![screenshot](docs/preview.png)
+### Phase 1
 
----
+Open world exploration, very simple avatar character (simple sphere). Floating islands made of half spheres. Pleasant background sky with stylized clouds. Daylight. Collision detection and invisible "fence" boundary. Swaying grass blades.
 
-## ⚡ Quick Cloning Command
+Loading state tracked and logging progress loading resources (`LoadingManager`).
 
-From [Community Notes - Getting Started | Vite](https://vite.dev/guide/#community-templates)
+### Phase 2
 
-```bash
-npx degit Made-of-Clay/vite-threejs-ts-template my-project
-cd my-project
-# my version of project init deviates this way
-pnpm i
-pnpm dev
-```
+Day/night transitions. One minute is one hour. Somehow detect day/night transitions. No sun/moon for now.
 
-## Tech Stack
+### Phase 3
 
-- Three.js
-- TypeScript
-- Vite
+Way to add new islands. Transportation between islands via super jump (exit & entry jump spots) or portal between islands (glowing ring showing other island's portal view).
 
+### Phase 4
+
+Imbument shrines on different islands where shrine imbues avatar with given elemental energies. Element use shaders; fire, ice, water, earth, light, dark, etc.
 
 ## CLI Commands
 
@@ -63,7 +58,7 @@ Firebase is my current static hosting provider.
 
 - Create a site under the playground project.
 - run `firebase-tools init hosting:github` and follow the prompts
-  - might run `npm config get prefix` to find the bin if PATH isn't configured correctly
+    - might run `npm config get prefix` to find the bin if PATH isn't configured correctly
 - Ensure firebase.json `hosting.site` is entered correctly
 
 ### GitHub Actions
