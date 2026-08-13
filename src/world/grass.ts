@@ -32,6 +32,7 @@ export function createGrass(): Grass {
             varying float vBladeHeight;
             void main() {
                 vec3 world = (instanceMatrix * vec4(position, 1.0)).xyz;
+                world = (modelMatrix * vec4(world, 1.0)).xyz;
                 float h = position.y / ${BLADE_HEIGHT};
                 float sway = sin(uTime * 2.2 + world.x * 0.8 + world.z * 0.6);
                 float swayZ = cos(uTime * 1.7 + world.z * 0.9 + world.x * 0.4);
@@ -64,9 +65,9 @@ export function createGrass(): Grass {
             const angle = rand() * Math.PI * 2;
             const dist = Math.sqrt(rand()) * island.radius * 0.9;
             position.set(
-                island.x + Math.cos(angle) * dist,
+                Math.cos(angle) * dist,
                 island.topY + 0.02,
-                island.z + Math.sin(angle) * dist,
+                Math.sin(angle) * dist,
             );
             yaw.y = rand() * Math.PI;
             quaternion.setFromEuler(yaw);
@@ -75,6 +76,7 @@ export function createGrass(): Grass {
             mesh.setMatrixAt(i, matrix);
         }
         mesh.instanceMatrix.needsUpdate = true;
+        mesh.computeBoundingSphere();
         island.group.add(mesh);
     });
 
