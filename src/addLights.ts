@@ -1,30 +1,30 @@
-import { AmbientLight, PointLight, PointLightHelper } from 'three'
-import { getGui } from './getGui'
+import { AmbientLight, DirectionalLight, HemisphereLight } from 'three';
+import { getGui } from './getGui';
 import { getScene } from './getScene';
 
 export function addLights() {
     const gui = getGui();
     const lightsFolder = gui.addFolder('Lights');
 
-    const ambientLight = new AmbientLight('white', 0.25);
+    const ambientLight = new AmbientLight('#ffffff', 0.35);
+    lightsFolder.add(ambientLight, 'visible').name('Ambient');
 
-    lightsFolder.add(ambientLight, 'visible').name('Ambient Light');
+    const hemisphereLight = new HemisphereLight('#bfd9ff', '#6fbf4a', 0.5);
+    lightsFolder.add(hemisphereLight, 'visible').name('Hemisphere');
 
-    const pointLight = new PointLight('white', 20, 100);
-    pointLight.position.set(2, 3, 2.25);
-    pointLight.castShadow = true;
-    pointLight.shadow.radius = 4;
-    pointLight.shadow.camera.near = 0.1;
-    pointLight.shadow.camera.far = 1000;
-    pointLight.shadow.mapSize.width = 2048;
-    pointLight.shadow.mapSize.height = 2048;
-
-    lightsFolder.add(pointLight, 'visible').name('Point Light');
-
-    const pointLightHelper = new PointLightHelper(pointLight, 0.25, 'orange');
-    // pointLightHelper.visible = false;
-    lightsFolder.add(pointLightHelper, 'visible').name('Point Light Helper');
+    const sunLight = new DirectionalLight('#fff4e0', 2.4);
+    sunLight.position.set(12, 24, 8);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.set(2048, 2048);
+    sunLight.shadow.camera.near = 1;
+    sunLight.shadow.camera.far = 80;
+    sunLight.shadow.camera.left = -22;
+    sunLight.shadow.camera.right = 22;
+    sunLight.shadow.camera.top = 22;
+    sunLight.shadow.camera.bottom = -22;
+    sunLight.shadow.bias = -0.0005;
+    lightsFolder.add(sunLight, 'visible').name('Sun');
 
     const scene = getScene();
-    scene.add(ambientLight, pointLight, pointLightHelper);
+    scene.add(ambientLight, hemisphereLight, sunLight);
 }
