@@ -20,7 +20,7 @@ export const ISLAND_DEFS: IslandDef[] = [
         id: 'meadow',
         x: 0,
         z: 9,
-        radius: 3.5,
+        radius: 5.5,
         topY: 1.8,
         grassColor: '#7ecb57',
         earthColor: '#8a5a34',
@@ -45,7 +45,7 @@ export const ISLAND_DEFS: IslandDef[] = [
     },
     {
         id: 'knoll',
-        x: -7,
+        x: -14,
         z: 5,
         radius: 2.2,
         topY: 1.0,
@@ -97,6 +97,7 @@ export function createIslands(): Island[] {
         earth.receiveShadow = true;
 
         group.add(grass, earth);
+        group.name = def.id;
         scene.add(group);
         islandsFolder.add(group, 'visible').name(def.id);
         return { ...def, group };
