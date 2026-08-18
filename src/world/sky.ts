@@ -10,6 +10,7 @@ import {
 } from 'three';
 import { getGui } from '../getGui';
 import { getScene } from '../getScene';
+import type { SkyTint } from '../time/dayCycle';
 
 const CLOUD_SPREAD = 48;
 
@@ -32,6 +33,7 @@ const CLOUD_DEFS: CloudDef[] = [
 
 export interface Sky {
     tick(delta: number): void;
+    setPalette(palette: SkyTint): void;
 }
 
 export function createSky(): Sky {
@@ -77,16 +79,17 @@ export function createSky(): Sky {
 
     const cloudTexture = createCloudTexture();
     const clouds: Sprite[] = [];
+    const cloudMaterials: SpriteMaterial[] = [];
     const cloudsFolder = skyFolder.addFolder('Clouds');
     CLOUD_DEFS.forEach((def, i) => {
-        const sprite = new Sprite(
-            new SpriteMaterial({
-                map: cloudTexture,
-                transparent: true,
-                depthWrite: false,
-                opacity: 0.95,
-            }),
-        );
+        const material = new SpriteMaterial({
+            map: cloudTexture,
+            transparent: true,
+            depthWrite: false,
+            opacity: 0.95,
+        });
+        cloudMaterials.push(material);
+        const sprite = new Sprite(material);
         sprite.position.set(def.x, def.y, def.z);
         sprite.scale.setScalar(def.scale);
         sprite.userData.drift = def.drift;
@@ -101,6 +104,13 @@ export function createSky(): Sky {
                 cloud.position.x += cloud.userData.drift * delta;
                 if (cloud.position.x > CLOUD_SPREAD) cloud.position.x = -CLOUD_SPREAD;
             }
+        },
+        setPalette(palette: SkyTint) {
+            const skyMaterial = skyMesh.material as ShaderMaterial;
+            skyMaterial.uniforms.topColor.value.copy(palette.top);
+            skyMaterial.uniforms.horizonColor.value.copy(palette.horizon);
+            skyMaterial.uniforms.bottomColor.value.copy(palette.bottom);
+            for (const material of cloudMaterials) material.color.copy(palette.cloud);
         },
     };
 }

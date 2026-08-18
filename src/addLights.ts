@@ -1,8 +1,13 @@
 import { AmbientLight, DirectionalLight, HemisphereLight } from 'three';
+import type { LightingState } from './time/dayCycle';
 import { getGui } from './getGui';
 import { getScene } from './getScene';
 
-export function addLights() {
+export interface Lights {
+    setLighting(state: LightingState): void;
+}
+
+export function addLights(): Lights {
     const gui = getGui();
     const lightsFolder = gui.addFolder('Lights');
 
@@ -27,4 +32,13 @@ export function addLights() {
 
     const scene = getScene();
     scene.add(ambientLight, hemisphereLight, sunLight);
+
+    return {
+        setLighting(state: LightingState) {
+            ambientLight.intensity = state.ambientIntensity;
+            hemisphereLight.intensity = state.hemisphereIntensity;
+            sunLight.intensity = state.sunIntensity;
+            sunLight.color.copy(state.sunColor);
+        },
+    };
 }

@@ -11,6 +11,9 @@ import { createFence } from './world/fence';
 import { createGrass } from './world/grass';
 import { createIslands } from './world/islands';
 import { createSky } from './world/sky';
+import { getGui } from './getGui';
+import { DayCycle } from './time/dayCycle';
+import { createTimeGui } from './time/timeGui';
 
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
@@ -28,11 +31,14 @@ loadingManager.onProgress = (url, loaded, total) =>
 loadingManager.onLoad = () => console.log('All assets loaded.');
 loadingManager.onError = (url) => console.error(`Failed to load: ${url}`);
 
-addLights();
+const lights = addLights();
 createIslands();
 const grass = createGrass();
 const sky = createSky();
 const clampToFence = createFence();
+
+const dayCycle = new DayCycle();
+const timeGui = createTimeGui(dayCycle);
 
 const avatar = new Avatar();
 const controls = new Controls(canvas);
@@ -41,10 +47,15 @@ scene.add(camera.instance);
 
 addHelpers();
 
+const gui = getGui();
+gui.close();
+
 // ===== 📈 STATS & CLOCK =====
 const stats = new Stats();
 document.body.appendChild(stats.dom);
 const clock = new Clock();
+
+let guiRefreshTimer = 0;
 
 function tick() {
     requestAnimationFrame(tick);
@@ -52,10 +63,21 @@ function tick() {
     stats.begin();
 
     const delta = clock.getDelta();
+    dayCycle.tick(delta);
+    const dayState = dayCycle.state;
+    sky.setPalette(dayState);
+    lights.setLighting(dayState);
+
     avatar.update(delta, controls, clampToFence);
     camera.update(delta, avatar, renderer);
     sky.tick(delta);
     grass.tick(delta);
+
+    guiRefreshTimer += delta;
+    if (guiRefreshTimer >= 0.5) {
+        guiRefreshTimer = 0;
+        timeGui.refresh();
+    }
 
     renderer.render(scene, camera.instance);
     stats.end();
