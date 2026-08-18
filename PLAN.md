@@ -38,7 +38,7 @@ Open world, very simple avatar (sphere). Floating islands (half spheres). Pleasa
 
 ## Phase 2 — Day/Night
 
-- Time clock: 1 minute == 1 hour → full day = 24 minutes.
+- Time clock: 1 minute == 2 hour → full day = 12 minutes.
 - Detect day/night phase. No sun/moon visual yet.
 - Drive sky color, ambient intensity, cloud tint from current time.
 - GUI: show in-game clock time + phase. Optional speed control.

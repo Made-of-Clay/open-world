@@ -40,7 +40,7 @@ export class Avatar {
 
     update(delta: number, controls: Controls, clampFence: (position: Vector3) => void) {
         this.yaw -= controls.lookX * LOOK_SPEED;
-        this.pitch -= controls.lookY * LOOK_SPEED;
+        this.pitch += controls.lookY * LOOK_SPEED;
         this.pitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, this.pitch));
         controls.lookX = 0;
         controls.lookY = 0;
