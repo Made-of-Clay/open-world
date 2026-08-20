@@ -1,4 +1,4 @@
-import { Clock, LoadingManager, PCFSoftShadowMap, WebGLRenderer } from 'three';
+import { PCFSoftShadowMap, Timer, WebGLRenderer } from 'three';
 import Stats from 'stats.js';
 import './style.css';
 import { addLights } from './addLights';
@@ -14,6 +14,8 @@ import { createSky } from './world/sky';
 import { getGui } from './getGui';
 import { DayCycle } from './time/dayCycle';
 import { createTimeGui } from './time/timeGui';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { getLoadingManager } from './getLoadingManager';
 
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
@@ -23,13 +25,13 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = PCFSoftShadowMap;
 const scene = getScene();
 
-const loadingManager = new LoadingManager();
-loadingManager.onStart = (url, loaded, total) =>
-    console.log(`Loading: ${url} (${loaded}/${total})`);
-loadingManager.onProgress = (url, loaded, total) =>
-    console.log(`Progress: ${url} (${loaded}/${total})`);
-loadingManager.onLoad = () => console.log('All assets loaded.');
-loadingManager.onError = (url) => console.error(`Failed to load: ${url}`);
+const loadingManager = getLoadingManager();
+
+const cheese: Promise<GLTF> = new Promise((resolve, reject) => {
+    const loader = new GLTFLoader(loadingManager);
+    loader.load('/models/cheese.glb', resolve, undefined, reject);
+});
+cheese.then((gltf) => scene.add(gltf.scene)).catch(console.error);
 
 const lights = addLights();
 createIslands();
@@ -53,16 +55,18 @@ gui.close();
 // ===== 📈 STATS & CLOCK =====
 const stats = new Stats();
 document.body.appendChild(stats.dom);
-const clock = new Clock();
+const timer = new Timer();
+timer.connect(document);
 
 let guiRefreshTimer = 0;
 
-function tick() {
+function tick(timestamp: number) {
     requestAnimationFrame(tick);
 
     stats.begin();
 
-    const delta = clock.getDelta();
+    timer.update(timestamp);
+    const delta = timer.getDelta();
     dayCycle.tick(delta);
     const dayState = dayCycle.state;
     sky.setPalette(dayState);
@@ -83,4 +87,4 @@ function tick() {
     stats.end();
 }
 
-tick();
+tick(performance.now());
