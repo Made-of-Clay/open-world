@@ -64,11 +64,7 @@ export function createGrass(): Grass {
         for (let i = 0; i < count; i++) {
             const angle = rand() * Math.PI * 2;
             const dist = Math.sqrt(rand()) * island.radius * 0.9;
-            position.set(
-                Math.cos(angle) * dist,
-                island.topY + 0.02,
-                Math.sin(angle) * dist,
-            );
+            position.set(Math.cos(angle) * dist, island.topY + 0.02, Math.sin(angle) * dist);
             yaw.y = rand() * Math.PI;
             quaternion.setFromEuler(yaw);
             scale.set(0.8 + rand() * 0.4, 0.9 + rand() * 0.6, 0.8 + rand() * 0.4);
